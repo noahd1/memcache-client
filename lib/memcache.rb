@@ -342,7 +342,7 @@ class MemCache
         raise MemCacheError, "Value too large, memcached can only store 1MB of data per key"
       end
 
-      command = "set #{cache_key} 0 #{expiry} #{value.to_s.size}#{noreply}\r\n#{value}\r\n"
+      command = "set #{cache_key} 0 #{expiry.floor} #{value.to_s.size}#{noreply}\r\n#{value}\r\n"
 
       with_socket_management(server) do |socket|
         socket.write command

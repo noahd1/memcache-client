@@ -784,6 +784,21 @@ class TestMemCache < Test::Unit::TestCase
     assert_equal expected, server.socket.written.string
   end
 
+  def test_set_expiry_with_float
+    server = FakeServer.new
+    server.socket.data.write "STORED\r\n"
+    server.socket.data.rewind
+    @cache.servers = []
+    @cache.servers << server
+
+    @cache.set 'key', 'value', 5.6
+
+    dumped = Marshal.dump('value')
+    expected = "set my_namespace:key 0 5 #{dumped.length}\r\n#{dumped}\r\n"
+    assert_equal expected, server.socket.written.string
+  end
+
+
   def test_set_raw
     server = FakeServer.new
     server.socket.data.write "STORED\r\n"
